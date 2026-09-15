@@ -1,5 +1,11 @@
 ## Overwiew
-This repo uses [unitree_ros2](https://github.com/unitreerobotics/unitree_ros2) from unitree for controlling GO2 and A2 (and probably B2, the hal should be the same as the one of A2), and [z1_sdk](https://github.com/iit-DLSLab/z1_sdk)/[z1_controller](https://github.com/unitreerobotics/z1_controller) for the Z1 arm. 
+This repo connet to many unitree robots using ros2.
+
+It uses: 
+
+- [unitree_ros2](https://github.com/unitreerobotics/unitree_ros2) for controlling **GO2**, **A2**, **B2**
+- [unitree_legged_sdk](https://github.com/unitreerobotics/unitree_legged_sdk) for **Aliengo**
+- [z1_sdk](https://github.com/iit-DLSLab/z1_sdk)/[z1_controller](https://github.com/unitreerobotics/z1_controller) for the **Z1** arm. 
 
 We add on top of these some new messages to be compatible with different **dls repositories**, like: 
 
@@ -8,6 +14,8 @@ We add on top of these some new messages to be compatible with different **dls r
 - [sim2real-robot-identification](https://github.com/iit-DLSLab/sim2real-robot-identification) for IsaacLab and Mujoco identification
 - [Quadruped-PyMPC](https://github.com/iit-DLSLab/Quadruped-PyMPC) for MPC
 - [muse](https://github.com/iit-DLSLab/muse/tree/unitree_sdk) for State Estimation
+
+and many others.. Check our github!
 
 
 ## Dependencies
@@ -30,13 +38,13 @@ pixi shell --manifest-path installation/pixi.toml -e humble
 
 Follow [README_unitree_ros2](./README_unitree_ros2.md) to install the things needed for GO2, B2 and A2.
 
-## Setup Z1 arm
-
-Follow [README_unitree_z1](./README_unitree_z1.md) to install the things needed for Z1 arm.
-
 ## Setup Aliengo
 
 Follow [README_unitree_legged_sdk](./README_unitree_legged_sdk.md) to install the things needed for Aliengo.
+
+## Setup Z1 arm
+
+Follow [README_unitree_z1](./README_unitree_z1.md) to install the things needed for Z1 arm.
 
 ## How to contribute
 
