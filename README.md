@@ -14,13 +14,15 @@ We add on top of these some new messages to be compatible with different **dls r
 
 **Note that if you are using one of our other repos with conda, you will likely have everything you need installed. In that case, just activate that conda env!**
 
-1. install [miniforge/conda](https://github.com/conda-forge/miniforge/releases) (x86_64 or arm64 depending on your platform)
+1. install [miniforge/conda](https://github.com/conda-forge/miniforge/releases) (x86_64 or arm64 depending on your platform) or [pixi](https://pixi.prefix.dev/latest/installation/) - the latter for full reproducibility.
 
 2. create an environment using the file in the folder [installation](./installation/) by doing:
 
 ```bash
 conda env create -f installation/mamba_environment_humble.yaml
 conda activate unitree_ros2_humble_env
+
+pixi shell --manifest-path installation/pixi.toml -e humble
 ```
 
 
