@@ -25,9 +25,11 @@ and many others.. Check our github!
 2. create an environment using the file in the folder [installation](./installation/) by doing:
 
 ```bash
+# for conda
 conda env create -f installation/mamba_environment_humble.yaml
 conda activate unitree_ros2_humble_env
 
+# for pixi
 pixi shell --manifest-path installation/pixi.toml -e humble
 ```
 
