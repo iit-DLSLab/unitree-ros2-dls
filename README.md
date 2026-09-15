@@ -1,7 +1,5 @@
 ## Overwiew
-This repo connet to many unitree robots using ros2.
-
-It uses: 
+This repo connects to many unitree robots using ros2. It uses: 
 
 - [unitree_ros2](https://github.com/unitreerobotics/unitree_ros2) for controlling **GO2**, **A2**, **B2**
 - [unitree_legged_sdk](https://github.com/unitreerobotics/unitree_legged_sdk) for **Aliengo**
