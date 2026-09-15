@@ -5,7 +5,7 @@ This repo connects to many unitree robots using ros2. It uses:
 - [unitree_legged_sdk](https://github.com/unitreerobotics/unitree_legged_sdk) for **Aliengo**
 - [z1_sdk](https://github.com/iit-DLSLab/z1_sdk)/[z1_controller](https://github.com/unitreerobotics/z1_controller) for the **Z1** arm. 
 
-We add on top of these some new messages to be compatible with different **dls repositories**, like: 
+We add on top of these some [messages](./ros2_ws/src/dls2_interface/msg/) to be compatible with different **dls repositories**, like: 
 
 - [basic-locomotion-isaaclab](https://github.com/iit-DLSLab/basic-locomotion-isaaclab) for RL locomotion
 - [get-up-isaaclab](https://github.com/iit-DLSLab/get-up-isaaclab) for RL get-up task
