@@ -26,11 +26,15 @@ and many others.. Check our github!
 
 ```bash
 # for conda
-conda env create -f installation/mamba_environment_humble.yaml
+conda env create -f installation/mamba_environment_humble.yaml # humble
 conda activate unitree_ros2_humble_env
 
+conda env create -f installation/mamba_environment_lyrical.yaml # lyrical
+conda activate unitree_ros2_lyrical_env
+
 # for pixi
-pixi shell --manifest-path installation/pixi.toml -e humble
+pixi shell --manifest-path installation/pixi.toml -e humble # humble
+pixi shell --manifest-path installation/pixi.toml -e lyrical # lyrical
 ```
 
 

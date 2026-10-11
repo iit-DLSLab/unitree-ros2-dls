@@ -19,7 +19,7 @@ tqdm = "*"
 
 
 [feature.humble]
-channels = ["https://repo.prefix.dev/robostack-staging"]
+channels = ["https://prefix.dev/robostack-humble"]
 
 [feature.humble.dependencies]
 ros-humble-desktop = "*"
@@ -28,11 +28,12 @@ ros-humble-rosidl-generator-dds-idl = "*"
 ros-humble-plotjuggler-ros = "*"
 
 [feature.lyrical]
-channels = ["https://repo.prefix.dev/robostack-lyrical"]
+channels = ["https://prefix.dev/robostack-lyrical"]
 
 [feature.lyrical.dependencies]
 ros-lyrical-desktop = "*"
 ros-lyrical-rmw-cyclonedds-cpp = "*"
+ros-lyrical-rosidl-generator-dds-idl = "*"
 ros-lyrical-plotjuggler-ros = "*"
 
 [environments]
