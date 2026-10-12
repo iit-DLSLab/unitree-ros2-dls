@@ -28,6 +28,34 @@ make
 sudo make install
 ```
 
+## Building the Aliengo ROS 2 HAL
+
+`aliengo_hal` is excluded from the default ROS 2 build by
+[ros2_ws/colcon_defaults.yaml](./ros2_ws/colcon_defaults.yaml) while its fix is pending:
+
+```yaml
+build:
+  packages-skip:
+    - aliengo_hal
+```
+
+To build the other ROS 2 packages, run from the repository root:
+
+```bash
+cd ros2_ws
+colcon build
+```
+
+To explicitly build Aliengo and its workspace dependencies, run from `ros2_ws`:
+
+```bash
+colcon build --packages-up-to aliengo_hal --packages-skip
+```
+
+The empty `--packages-skip` overrides the default exclusion. Selecting Aliengo
+alone does not override it. This command enables the build; the Aliengo HAL fix
+is still required for it to compile successfully.
+
 ## Running the aliengo hal
 Open a terminal and input:
 ```bash
