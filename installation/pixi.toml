@@ -16,6 +16,7 @@ colcon-common-extensions = "*"
 catkin_tools = "*"
 rosdep = "*"
 tqdm = "*"
+liblcm-devel = "*"
 
 
 [feature.humble]

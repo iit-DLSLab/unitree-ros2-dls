@@ -1,5 +1,10 @@
+#include <sched.h>
+#include <sys/mman.h>
+
+#include <cerrno>
 #include <chrono>
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 #include <memory>
 #include <mutex>
@@ -25,6 +30,24 @@ constexpr char TARGET_IP[] = "192.168.123.10";
 constexpr int LOW_CMD_LENGTH = 610;
 constexpr int LOW_STATE_LENGTH = 771;
 constexpr float CONTROL_DT = 0.002f;
+
+
+// Same as InitEnvironment() of the unitree sdk (lock the memory and run with real-time priority),
+// but if the user is not allowed to do it, it prints a warning instead of exiting.
+// To allow it, see "Real-time priority" in README_unitree_legged_sdk.md
+void InitRealTimeEnvironment() {
+  if (mlockall(MCL_CURRENT | MCL_FUTURE) == -1) {
+    std::cerr << "Warning: mlockall failed (" << std::strerror(errno)
+              << "), running without locked memory." << std::endl;
+  }
+
+  sched_param param{};
+  param.sched_priority = THREAD_PRIORITY;
+  if (sched_setscheduler(0, SCHED_FIFO, &param) == -1) {
+    std::cerr << "Warning: real-time priority not allowed (" << std::strerror(errno)
+              << "), running with normal priority. See README_unitree_legged_sdk.md." << std::endl;
+  }
+}
 
 class LowLevelCmdNode : public rclcpp::Node {
   public:
@@ -73,7 +96,7 @@ class LowLevelCmdNode : public rclcpp::Node {
 
 
 void LowLevelCmdNode::Init() {
-  InitEnvironment();
+  InitRealTimeEnvironment();
   InitLowCmd();
 
   // Create publishers and subscribers to talk with the controller/DLS2
@@ -98,7 +121,7 @@ void LowLevelCmdNode::InitLowCmd() {
   low_cmd_.levelFlag = LOWLEVEL;
 
   for (int i = 0; i < 20; i++) {
-    low_cmd_.motorCmd[i].mode = 0x01;  // motor switch to servo (PMSM) mode
+    low_cmd_.motorCmd[i].mode = 0x0A;  // motor switch to servo (PMSM) mode (0x0A on Aliengo, 0x01 is for Go2/A2)
     low_cmd_.motorCmd[i].q = PosStopF;
     low_cmd_.motorCmd[i].Kp = 0;
     low_cmd_.motorCmd[i].dq = VelStopF;

@@ -27,15 +27,16 @@ if os.path.exists(ros2_ws_path + "/build"):
 
 
 # Build the unitree legged sdk with the conda compilers, only if needed.
-# The last three flags make it work with cmake 4 and find the system lcm (/usr/include/lcm, /usr/lib/<arch>/liblcm.so)
+# The last three flags make it work with cmake 4 and find the conda lcm (liblcm-devel: $CONDA_PREFIX/include/lcm, $CONDA_PREFIX/lib/liblcm.so).
+# Do not point it to /usr/include or /usr/lib: the system glibc does not match the conda compilers
 if not os.path.exists(unitree_legged_sdk_path + "/build/example_torque_aliengo"):
     print("Building unitree_legged_sdk first..")
     os.system("bash -c 'cd unitree_legged_sdk && cmake -S . -B build "
               "-DCMAKE_C_COMPILER=$CONDA_PREFIX/bin/$(uname -m)-conda-linux-gnu-cc "
               "-DCMAKE_CXX_COMPILER=$CONDA_PREFIX/bin/$(uname -m)-conda-linux-gnu-c++ "
               "-DCMAKE_POLICY_VERSION_MINIMUM=3.5 "
-              "-DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=/usr/include "
-              "-DCMAKE_EXE_LINKER_FLAGS=-L/usr/lib/$(uname -m)-linux-gnu "
+              "-DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=$CONDA_PREFIX/include "
+              "\"-DCMAKE_EXE_LINKER_FLAGS=-L$CONDA_PREFIX/lib -Wl,-rpath,$CONDA_PREFIX/lib\" "
               "&& cmake --build build'")
 
 # Build the dls2 msgs and the aliengo HAL, only if needed.

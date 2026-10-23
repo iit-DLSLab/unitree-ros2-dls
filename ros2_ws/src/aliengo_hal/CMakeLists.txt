@@ -29,26 +29,6 @@ include_directories(
   "${UNITREE_LEGGED_SDK_DIR}/include"
 )
 
-find_path(LCM_INCLUDE_DIR
-  NAMES lcm/lcm-cpp.hpp
-  PATHS /usr/include
-)
-
-find_library(LCM_LIBRARY
-  NAMES lcm
-  PATHS
-    /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}
-    /usr/lib/x86_64-linux-gnu
-    /usr/lib/aarch64-linux-gnu
-)
-
-if(NOT LCM_INCLUDE_DIR OR NOT LCM_LIBRARY)
-  message(FATAL_ERROR "LCM headers/library not found")
-endif()
-
-include_directories("${LCM_INCLUDE_DIR}")
-get_filename_component(LCM_LIBRARY_DIR "${LCM_LIBRARY}" DIRECTORY)
-
 set(
   DEPENDENCY_LIST
   dls2_interface
@@ -60,11 +40,11 @@ find_package(ament_cmake REQUIRED)
 find_package(dls2_interface REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+# LCM comes from the conda/pixi environment (liblcm-devel)
+find_package(lcm REQUIRED)
 
 add_executable(aliengo_hal aliengo_hal.cpp)
 ament_target_dependencies(aliengo_hal ${DEPENDENCY_LIST})
-target_compile_options(aliengo_hal PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-I${LCM_INCLUDE_DIR}>)
-target_link_options(aliengo_hal PRIVATE "-L${LCM_LIBRARY_DIR}")
 target_link_libraries(aliengo_hal "${UNITREE_LEGGED_SDK_LIB}" lcm pthread)
 set_target_properties(aliengo_hal PROPERTIES
   INSTALL_RPATH "${UNITREE_LEGGED_SDK_DIR}/lib/cpp/${ARCH}"

@@ -1,9 +1,30 @@
-## Install LCM (required)
+## LCM (required)
 
-The Unitree Legged SDK and `aliengo_hal` need LCM installed on the system:
+The Unitree Legged SDK and `aliengo_hal` need LCM. It comes from the conda/pixi environment (`liblcm-devel` from conda-forge, already listed in [installation/pixi.toml](./installation/pixi.toml) and in the mamba yaml files). If your environment was created before it was added, update it:
 
 ```bash
-sudo apt install liblcm-dev
+cd installation && pixi install -e humble   # or: mamba install -c conda-forge liblcm-devel
+```
+
+Do not use the system LCM (`sudo apt install liblcm-dev`): it is built against the system glibc, which does not match the conda compilers, and linking fails (e.g. `undefined reference to '__libc_csu_init'`).
+
+## Real-time priority (recommended)
+
+When it starts, the HAL locks its memory and switches to real-time scheduling (`SCHED_FIFO`, priority 99), like the SDK `InitEnvironment()`. If your user is not allowed to do this, the HAL prints `Warning: real-time priority not allowed` (or `Warning: mlockall failed`) and keeps running with normal priority, so the 500 Hz loops are less regular. On the real robot, allow it once:
+
+```bash
+sudo tee /etc/security/limits.d/99-unitree-realtime.conf <<EOF
+$(id -un)  -  rtprio   99
+$(id -un)  -  memlock  unlimited
+EOF
+```
+
+Then log out and log in again (or reboot), and check that `ulimit -r` prints `99`.
+
+To try it right away without logging out, raise the limits of the current terminal only:
+
+```bash
+sudo prlimit --pid $$ --rtprio=99 --memlock=unlimited
 ```
 
 ## Compile the Unitree Legged SDK and the Aliengo HAL
@@ -30,13 +51,13 @@ cmake -S . -B build \
   -DCMAKE_C_COMPILER=$CONDA_PREFIX/bin/$(uname -m)-conda-linux-gnu-cc \
   -DCMAKE_CXX_COMPILER=$CONDA_PREFIX/bin/$(uname -m)-conda-linux-gnu-c++ \
   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-  -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=/usr/include \
-  -DCMAKE_EXE_LINKER_FLAGS=-L/usr/lib/$(uname -m)-linux-gnu
+  -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=$CONDA_PREFIX/include \
+  "-DCMAKE_EXE_LINKER_FLAGS=-L$CONDA_PREFIX/lib -Wl,-rpath,$CONDA_PREFIX/lib"
 cmake --build build
 cd ..
 ```
 
-The last three flags let cmake 4 configure the SDK and let the conda compilers find the system LCM, so the CMakeLists.txt of **unitree_legged_sdk** does not need to be modified. There is no install step.
+The last three flags let cmake 4 configure the SDK and let the conda compilers find the conda LCM, so the CMakeLists.txt of **unitree_legged_sdk** does not need to be modified. There is no install step.
 
 2. Compile the DLS2 messages and the Aliengo HAL in **ros2_ws** (the launcher does it only if `ros2_ws/install/dls2_interface` or `ros2_ws/install/aliengo_hal` do not exist):
 
