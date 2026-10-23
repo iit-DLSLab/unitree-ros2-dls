@@ -1,5 +1,11 @@
 ## Compile the Unitree Legged SDK and the Aliengo HAL
 
+First, initialise the submodules (required before any cmake step):
+
+```bash
+git submodule update --init --recursive
+```
+
 ### Easiest: compile with the launcher
 
 From the repository root, with your conda/pixi environment activated, just run (after the [network configuration](#network-configuration)):
