@@ -1,32 +1,3 @@
-## LCM (required)
-
-The Unitree Legged SDK and `aliengo_hal` need LCM. It comes from the conda/pixi environment (`liblcm-devel` from conda-forge, already listed in [installation/pixi.toml](./installation/pixi.toml) and in the mamba yaml files). If your environment was created before it was added, update it:
-
-```bash
-cd installation && pixi install -e humble   # or: mamba install -c conda-forge liblcm-devel
-```
-
-Do not use the system LCM (`sudo apt install liblcm-dev`): it is built against the system glibc, which does not match the conda compilers, and linking fails (e.g. `undefined reference to '__libc_csu_init'`).
-
-## Real-time priority (recommended)
-
-When it starts, the HAL locks its memory and switches to real-time scheduling (`SCHED_FIFO`, priority 99), like the SDK `InitEnvironment()`. If your user is not allowed to do this, the HAL prints `Warning: real-time priority not allowed` (or `Warning: mlockall failed`) and keeps running with normal priority, so the 500 Hz loops are less regular. On the real robot, allow it once:
-
-```bash
-sudo tee /etc/security/limits.d/99-unitree-realtime.conf <<EOF
-$(id -un)  -  rtprio   99
-$(id -un)  -  memlock  unlimited
-EOF
-```
-
-Then log out and log in again (or reboot), and check that `ulimit -r` prints `99`.
-
-To try it right away without logging out, raise the limits of the current terminal only:
-
-```bash
-sudo prlimit --pid $$ --rtprio=99 --memlock=unlimited
-```
-
 ## Compile the Unitree Legged SDK and the Aliengo HAL
 
 ### Easiest: compile with the launcher
