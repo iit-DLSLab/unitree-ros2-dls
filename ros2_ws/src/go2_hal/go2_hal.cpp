@@ -199,6 +199,8 @@ void LowLevelCmdNode::Start() {
 void LowLevelCmdNode::LowStateMessageHandler(const unitree_go::msg::LowState::SharedPtr msg) {
   low_state_ = *msg;
   const double synchronized_stamp = SynchronizedTimestamp();
+  // DLS2 header timestamp is in nanoseconds
+  const uint64_t synchronized_stamp_ns = static_cast<uint64_t>(std::llround(synchronized_stamp * 1e9));
 
 
   // Publish DLS2 IMU message
@@ -211,7 +213,7 @@ void LowLevelCmdNode::LowStateMessageHandler(const unitree_go::msg::LowState::Sh
     imu_.angular_velocity[i] = low_state_.imu_state.gyroscope[i];
     imu_.linear_acceleration[i] = low_state_.imu_state.accelerometer[i];
   }
-  imu_.timestamp = synchronized_stamp;
+  imu_.header.timestamp = synchronized_stamp_ns;
   imu_pub_->publish(imu_);
 
 
@@ -256,10 +258,10 @@ void LowLevelCmdNode::LowStateMessageHandler(const unitree_go::msg::LowState::Sh
     blind_state_.joints_effort[i-3] = motor_[i].tau_est;
   }
 
-  blind_state_.timestamp = synchronized_stamp;
+  blind_state_.header.timestamp = synchronized_stamp_ns;
   blind_state_pub_->publish(blind_state_);
 
-  joint_state_.header.stamp = rclcpp::Time(std::llround(synchronized_stamp * 1e9));
+  joint_state_.header.stamp = rclcpp::Time(static_cast<int64_t>(synchronized_stamp_ns));
   joint_state_.position = blind_state_.joints_position;
   joint_state_.velocity = blind_state_.joints_velocity;
   joint_state_.effort = blind_state_.joints_effort;

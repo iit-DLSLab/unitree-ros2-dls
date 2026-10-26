@@ -168,6 +168,10 @@ void LowLevelCmdNode::RobotControl() {
 
 // Publish states to DLS2 topics
 void LowLevelCmdNode::PublishLowState() {
+  const rclcpp::Time stamp = this->now();
+  // DLS2 header timestamp is in nanoseconds
+  const uint64_t stamp_ns = static_cast<uint64_t>(stamp.nanoseconds());
+
   // We use xywz convention
   imu_.orientation[0] = low_state_.imu.quaternion[1];
   imu_.orientation[1] = low_state_.imu.quaternion[2];
@@ -177,6 +181,7 @@ void LowLevelCmdNode::PublishLowState() {
     imu_.angular_velocity[i] = low_state_.imu.gyroscope[i];
     imu_.linear_acceleration[i] = low_state_.imu.accelerometer[i];
   }
+  imu_.header.timestamp = stamp_ns;
   imu_pub_->publish(imu_);
 
 
@@ -221,9 +226,10 @@ void LowLevelCmdNode::PublishLowState() {
     blind_state_.joints_effort[i-3] = motor_[i].tauEst;
   }
 
+  blind_state_.header.timestamp = stamp_ns;
   blind_state_pub_->publish(blind_state_);
 
-  joint_state_.header.stamp = this->now();
+  joint_state_.header.stamp = stamp;
   joint_state_.position = blind_state_.joints_position;
   joint_state_.velocity = blind_state_.joints_velocity;
   joint_state_.effort = blind_state_.joints_effort;

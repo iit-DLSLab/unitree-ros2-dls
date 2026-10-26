@@ -53,15 +53,17 @@ class Z1HALNode(Node):
         current_tau = self.arm.lowstate.getTau()
         current_gripper_q = self.arm.lowstate.getGripperQ()
         current_gripper_qd = self.arm.lowstate.getGripperQd()
+        stamp = self.get_clock().now()
 
         blind_state_msg = BlindState()
+        blind_state_msg.header.timestamp = stamp.nanoseconds  # DLS2 header timestamp is in nanoseconds
         blind_state_msg.joints_name = self.joint_names
         blind_state_msg.joints_position = current_q.tolist() + [current_gripper_q]
         blind_state_msg.joints_velocity = current_qd.tolist() + [current_gripper_qd]
         self.publisher_arm_blind_state.publish(blind_state_msg)
 
         joint_state_msg = JointState()
-        joint_state_msg.header.stamp = self.get_clock().now().to_msg()
+        joint_state_msg.header.stamp = stamp.to_msg()
         joint_state_msg.name = self.joint_names[:6]
         joint_state_msg.position = current_q.tolist()
         joint_state_msg.velocity = current_qd.tolist()
