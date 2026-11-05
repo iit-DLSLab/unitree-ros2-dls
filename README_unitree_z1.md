@@ -1,19 +1,31 @@
 ## Install Z1 sdk and controller packages
 
-First, initialise the submodules (required before any cmake step):
+## Network configuration
 
+1. Connect the Z1 arm and the computer using an Ethernet cable. Then, open the network settings, find the network interface to which the arm is connected. In IPv4 setting, **change the IPv4 mode to manual, set the address to a free IP of the robot network (e.g. 192.168.123.111), and set the mask to 255.255.255.0**. Do not use 192.168.123.110, which is the Z1 arm (the Z1 controller talks to it via UDP on port 8881, see `unitree_z1/z1_controller/config/config.xml`). If the Z1 is mounted on a quadruped and reachable through the same network, the IP already set for the quadruped works too. After completion, click apply and wait for the network to reconnect.
+
+2. Ensure that the network of the arm is connected correctly by opening a terminal and writing:
 ```bash
-git submodule update --init --recursive
+ping 192.168.123.110
 ```
 
-### Easiest: compile with the launchers
+The Z1 HAL talks only locally with the Z1 controller, so **unitree_ros2_connect.bash** is not needed for the Z1.
 
-From the repository root, with your conda/pixi environment activated (after the [network configuration](#network-configuration)):
 
-- `python3 launch_z1_controller.py` compiles **z1_controller** and **z1_sdk** (with its python interface, used by the Z1 HAL) the first time, and then starts the Z1 controller.
-- `python3 launch_z1_hal.py` compiles the DLS2 messages (`dls2_interface` in **ros2_ws**) the first time, and then starts the Z1 HAL.
+## Running the Z1 HAL
 
-The next times they only start the controller/HAL. If a build folder already exists, they first ask whether to delete it and rebuild from scratch. Run `launch_z1_controller.py` first (see [Running the Z1 HAL](#running-the-z1-hal)), since the Z1 HAL needs the python interface of **z1_sdk**.
+**(TERMINAL 1)** From the repo root, start the Z1 controller:
+
+```bash
+python3 launch_z1_controller.py
+```
+
+**(TERMINAL 2)** From the repo root, start the HAL node:
+
+```bash
+python3 launch_z1_hal.py
+```
+
 
 ### What the launchers do, by hand
 
@@ -63,31 +75,4 @@ To rebuild from scratch, delete the build folders first (this is what answering 
 ```bash
 rm -rf unitree_z1/z1_controller/build unitree_z1/z1_sdk/build # launch_z1_controller.py
 rm -rf ros2_ws/build ros2_ws/install ros2_ws/log             # launch_z1_hal.py
-```
-
-
-## Network configuration
-
-1. Connect the Z1 arm and the computer using an Ethernet cable. Then, open the network settings, find the network interface to which the arm is connected. In IPv4 setting, **change the IPv4 mode to manual, set the address to a free IP of the robot network (e.g. 192.168.123.111), and set the mask to 255.255.255.0**. Do not use 192.168.123.110, which is the Z1 arm (the Z1 controller talks to it via UDP on port 8881, see `unitree_z1/z1_controller/config/config.xml`). If the Z1 is mounted on a quadruped and reachable through the same network, the IP already set for the quadruped works too. After completion, click apply and wait for the network to reconnect.
-
-2. Ensure that the network of the arm is connected correctly by opening a terminal and writing:
-```bash
-ping 192.168.123.110
-```
-
-The Z1 HAL talks only locally with the Z1 controller, so **unitree_ros2_connect.bash** is not needed for the Z1.
-
-
-## Running the Z1 HAL
-
-**(TERMINAL 1)** From the repo root, start the Z1 controller:
-
-```bash
-python3 launch_z1_controller.py
-```
-
-**(TERMINAL 2)** From the repo root, start the HAL node:
-
-```bash
-python3 launch_z1_hal.py
 ```

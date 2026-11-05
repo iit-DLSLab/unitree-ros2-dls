@@ -20,23 +20,20 @@ and many others.. Check our github!
 
 **Note that if you are using one of our other repos with conda, you will likely have everything you need installed. In that case, just activate that conda env!**
 
-1. install [miniforge/conda](https://github.com/conda-forge/miniforge/releases) (x86_64 or arm64 depending on your platform) or [pixi](https://pixi.prefix.dev/latest/installation/) - the latter for full reproducibility.
+1. install [pixi](https://pixi.prefix.dev/latest/installation/).
 
-2. create an environment using the file in the folder [installation](./installation/) by doing:
+2. activate the environment from the root of this repo by doing:
 
 ```bash
-# for conda
-conda env create -f installation/mamba_environment_humble.yaml # humble
-conda activate unitree_ros2_humble_env
-
-conda env create -f installation/mamba_environment_lyrical.yaml # lyrical
-conda activate unitree_ros2_lyrical_env
-
-# for pixi
-pixi shell --manifest-path installation/pixi.toml -e humble # humble
-pixi shell --manifest-path installation/pixi.toml -e lyrical # lyrical
+pixi shell -e humble # humble
+pixi shell -e lyrical # lyrical
 ```
 
+3. Initialise the submodules:
+
+```bash
+git submodule update --init --recursive
+```
 
 ## Setup Go2, B2, A2
 
