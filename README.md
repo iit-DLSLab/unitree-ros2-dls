@@ -25,8 +25,8 @@ and many others.. Check our github!
 2. activate the environment from the root of this repo by doing:
 
 ```bash
-pixi shell -e humble # humble
-pixi shell -e lyrical # lyrical
+pixi shell            # lyrical (default)
+pixi shell -e humble  # humble
 ```
 
 3. Initialise the submodules:
