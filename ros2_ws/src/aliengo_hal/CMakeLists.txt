@@ -29,13 +29,6 @@ include_directories(
   "${UNITREE_LEGGED_SDK_DIR}/include"
 )
 
-set(
-  DEPENDENCY_LIST
-  dls2_interface
-  rclcpp
-  sensor_msgs
-)
-
 find_package(ament_cmake REQUIRED)
 find_package(dls2_interface REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -44,8 +37,16 @@ find_package(sensor_msgs REQUIRED)
 find_package(lcm REQUIRED)
 
 add_executable(aliengo_hal aliengo_hal.cpp)
-ament_target_dependencies(aliengo_hal ${DEPENDENCY_LIST})
-target_link_libraries(aliengo_hal "${UNITREE_LEGGED_SDK_LIB}" lcm pthread)
+# ament_target_dependencies was removed in ROS 2 Lyrical: link the exported
+# CMake targets directly (works on Humble too).
+target_link_libraries(aliengo_hal
+  ${dls2_interface_TARGETS}
+  rclcpp::rclcpp
+  ${sensor_msgs_TARGETS}
+  "${UNITREE_LEGGED_SDK_LIB}"
+  lcm
+  pthread
+)
 set_target_properties(aliengo_hal PROPERTIES
   INSTALL_RPATH "${UNITREE_LEGGED_SDK_DIR}/lib/cpp/${ARCH}"
 )

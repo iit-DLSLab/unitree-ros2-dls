@@ -21,17 +21,6 @@ include_directories(
   "${UNITREE_EXAMPLE_DIR}/include/nlohmann"
 )
 
-set(
-  DEPENDENCY_LIST
-  unitree_go
-  dls2_interface
-  unitree_api
-  rclcpp
-  sensor_msgs
-  std_msgs
-  rosbag2_cpp
-)
-
 find_package(ament_cmake REQUIRED)
 find_package(unitree_go REQUIRED)
 find_package(dls2_interface REQUIRED)
@@ -43,7 +32,17 @@ find_package(rosbag2_cpp REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 add_executable(go2_hal go2_hal.cpp "${UNITREE_EXAMPLE_DIR}/src/common/motor_crc.cpp")
-ament_target_dependencies(go2_hal ${DEPENDENCY_LIST})
+# ament_target_dependencies was removed in ROS 2 Lyrical: link the exported
+# CMake targets directly (works on Humble too).
+target_link_libraries(go2_hal
+  ${unitree_go_TARGETS}
+  ${dls2_interface_TARGETS}
+  ${unitree_api_TARGETS}
+  rclcpp::rclcpp
+  ${sensor_msgs_TARGETS}
+  ${std_msgs_TARGETS}
+  rosbag2_cpp::rosbag2_cpp
+)
 
 install(TARGETS
   go2_hal
